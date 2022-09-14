@@ -7,17 +7,16 @@
     "upload": "vite build"
   },
   "dependencies": {
-    "@leanix/reporting": "^0.4.87",
-    "vue": "^3.2.10"
+    "@leanix/reporting": "^0.4.118",
+    "vue": "^3.2.39"
   },
   "devDependencies": {
-    "@vitejs/plugin-vue": "^1.6.2",
-    "@vue/compiler-sfc": "^3.2.10",
-    "autoprefixer": "^10.3.4",
-    "postcss": "^8.3.6",
-    "tailwindcss": "^2.2.15",
-    "vite": "^2.5.6",
-    "vite-plugin-lxr": "^0.0.2"
+    "@vitejs/plugin-vue": "^3.1.0",
+    "autoprefixer": "^10.4.11",
+    "postcss": "^8.4.16",
+    "tailwindcss": "^3.1.8",
+    "vite": "^3.1.0",
+    "vite-plugin-lxr": "^0.0.6"
   },
   "author": "LeanIX GmbH",
   "description": "Tutorial on how to query workspace data from a custom report",

@@ -50,8 +50,7 @@ npx tailwindcss init -p
 ```javascript
 // tailwind.config.js
 module.exports = {
-  purge: ['./index.html', './src/**/*.{vue,js,ts,jsx,tsx}'],
-  darkMode: false, // or 'media' or 'class'
+  content: ['./index.html', './src/**/*.{vue,js,ts,jsx,tsx}'],
   theme: {
     extend: {},
   },
@@ -92,9 +91,9 @@ npm run dev
 ```
 **Note!**
 
-When you run *npm run dev*, a local webserver is hosted on *localhost:3000* that allows connections via HTTPS. But since just a development SSL certificate is created the browser might show a warning that the connection is not secure. You could either allow connections to this host anyways, or create your own self-signed certificate: https://www.tonyerwin.com/2014/09/generating-self-signed-ssl-certificates.html#MacKeyChainAccess.
+When you run *npm run dev*, a local webserver is hosted on *localhost:5173* that allows connections via HTTPS. But since just a development SSL certificate is created the browser might show a warning that the connection is not secure. You could either allow connections to this host anyways, or create your own self-signed certificate: https://www.tonyerwin.com/2014/09/generating-self-signed-ssl-certificates.html#MacKeyChainAccess.
 
-If you decide to add a security exception to your localhost, make sure you open a second browser tab and point it to https://localhost:3000. Once the security exception is added to your browser, reload the original url of your development server and open the development console. Your should see a screen similar to the one below:
+If you decide to add a security exception to your localhost, make sure you open a second browser tab and point it to https://localhost:5173. Once the security exception is added to your browser, reload the original url of your development server and open the development console. Your should see a screen similar to the one below:
 
 ![screenshot-02](https://i.imgur.com/DU1cnK0.png)
 
@@ -120,7 +119,7 @@ const facetResultIndex = ref({})
 // can syncronously await for Promise results
 const initializeReport = async () => {
   // Intialize our reporting framework by calling the lx.init method
-  // https://leanix.github.io/leanix-reporting/classes/lxr.lxcustomreportlib.html#init
+  // https://leanix.github.io/leanix-reporting/classes/lxr.LxCustomReportLib.html#init
   const setup = await lx.init()
 
   // we extract the workspace factsheet types from the setup object and store
@@ -132,7 +131,7 @@ const initializeReport = async () => {
 
   // we map each factsheet type into a report facet that we will use
   // to extract the relevant statistics from our workspace
-  // https://leanix.github.io/leanix-reporting/interfaces/lxr.reportfacetsconfig.html
+  // https://leanix.github.io/leanix-reporting/interfaces/lxr.ReportFacetsConfig.html
   const facets = factSheetTypes.value
     .map((factSheetType, key) => ({
       key: key.toString(),
@@ -154,7 +153,7 @@ const initializeReport = async () => {
       }
     }))
   // finally we call the lx.ready method with our report configuration
-  // https://leanix.github.io/leanix-reporting/classes/lxr.lxcustomreportlib.html#ready
+  // https://leanix.github.io/leanix-reporting/interfaces/lxr.ReportFacetsConfig.html
   lx.ready({ facets })
 }
 
@@ -192,7 +191,7 @@ Once you set a combination of *facet filters* in your report, you can **bookmark
 ![screenshot-05](https://i.imgur.com/T8XPbCc.png)
 
 ## Fetching workspace data using GraphQL queries
-Another way to fetch data from a workspace into a custom report is by using the [lx.executeGraphQL](https://leanix.github.io/leanix-reporting/classes/lxr.lxcustomreportlib.html#executegraphql) method provided by the [leanix-reporting api](https://leanix.github.io/leanix-reporting/classes/lxr.lxcustomreportlib.html). Unlike the Facet Filter method we've seen before, which allows only data to be read from your workspace, the [lx.executeGraphQL](https://leanix.github.io/leanix-reporting/classes/lxr.lxcustomreportlib.html#executegraphql) method allows also to mutate the workspace data. However, the integration of this method with the standard filtering and bookmarking controls is not out of the box like the Facet Filters method seen before. Nevertheless, it can be done with a special technique in our custom report, as we'll see ahead.
+Another way to fetch data from a workspace into a custom report is by using the [lx.executeGraphQL](https://leanix.github.io/leanix-reporting/classes/lxr.LxCustomReportLib.html#executeGraphQL) method provided by the [leanix-reporting api](https://leanix.github.io/leanix-reporting/classes/lxr.LxCustomReportLib.html). Unlike the Facet Filter method we've seen before, which allows only data to be read from your workspace, the [lx.executeGraphQL](https://leanix.github.io/leanix-reporting/classes/lxr.LxCustomReportLib.html#executeGraphQL) method allows also to mutate the workspace data. However, the integration of this method with the standard filtering and bookmarking controls is not out of the box like the Facet Filters method seen before. Nevertheless, it can be done with a special technique in our custom report, as we'll see ahead.
 
 ### Setting up the report configuration
 We edit once again the <code>script</code> section of our <code>src/App.vue</code> file and additionally declare the a variable <code>graphQLResultIndex</code>, a method <code>fetchGraphQLData</code> and a <code>watcher</code> for the variable <code>factSheetTypes</code> as follows:
@@ -263,9 +262,9 @@ We also adjust our <code>template</code> tag in <code>src/App.vue</code> so that
 Our report now should look like this:
 ![screenshot-06](https://i.imgur.com/7UiDz3D.png)
 
-As you can verify, the results provided by Facets and GraphQL are identical. However, if you try to apply a filter, you'll notice that only the Facets column changes. This happens because we are only triggering the <code>fetchGraphQLData</code> method whenever our <code>factSheetTypes</code> variables change, which only happens once the report loads. Therefore the GraphQL part of our report, as it is, does not react to any changes in the filters. However, the [leanix-reporting api](https://leanix.github.io/leanix-reporting/) provides a way of **listening to filter changes and trigger a callback** through the facet configuration property [facetFiltersChangedCallback](https://leanix.github.io/leanix-reporting/interfaces/lxr.reportfacetsconfig.html#facetfilterschangedcallback) . We'll adapt then our source code to make our graphQL queries reactive to changes in filters.
+As you can verify, the results provided by Facets and GraphQL are identical. However, if you try to apply a filter, you'll notice that only the Facets column changes. This happens because we are only triggering the <code>fetchGraphQLData</code> method whenever our <code>factSheetTypes</code> variables change, which only happens once the report loads. Therefore the GraphQL part of our report, as it is, does not react to any changes in the filters. However, the [leanix-reporting api](https://leanix.github.io/leanix-reporting/) provides a way of **listening to filter changes and trigger a callback** through the facet configuration property [facetFiltersChangedCallback](https://leanix.github.io/leanix-reporting/interfaces/lxr.ReportFacetsConfig.html#facetChangedCallback) . We'll adapt then our source code to make our graphQL queries reactive to changes in filters.
 
-For that, we'll adapt the <code>initializeReport</code> method and set, for each facet, a [facetFiltersChangedCallback](https://leanix.github.io/leanix-reporting/interfaces/lxr.reportfacetsconfig.html#facetfilterschangedcallback) that will trigger the <code>fetchGraphQLData</code> method on each facet update, i.e. when the user sets a filter. Notice as well that we make a slight change in the <code>fetchGraphQLData</code> so to include in our query the facet filtering parameters passed by the callback. Finally note as well that we delete the watcher we previously set.
+For that, we'll adapt the <code>initializeReport</code> method and set, for each facet, a [facetFiltersChangedCallback](https://leanix.github.io/leanix-reporting/interfaces/lxr.ReportFacetsConfig.html#facetChangedCallback) that will trigger the <code>fetchGraphQLData</code> method on each facet update, i.e. when the user sets a filter. Notice as well that we make a slight change in the <code>fetchGraphQLData</code> so to include in our query the facet filtering parameters passed by the callback. Finally note as well that we delete the watcher we previously set.
 
 ```html
 <script setup>
